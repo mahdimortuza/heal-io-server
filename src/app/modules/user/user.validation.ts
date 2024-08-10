@@ -5,6 +5,7 @@ const createUserValidationSchema = z.object({
   email: z.string().email(),
   password: z.string(),
   photo: z.string().optional(),
+  isDeleted: z.boolean().default(false),
 });
 
 const updateUserValidationSchema = z.object({
