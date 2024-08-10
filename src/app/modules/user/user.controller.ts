@@ -1,11 +1,22 @@
 import { Request, Response } from 'express';
 import { UserServices } from './user.service';
+import { UserValidations } from './user.validation';
 
 const createUser = async (req: Request, res: Response) => {
   try {
     const user = req.body.user;
 
-    const result = await UserServices.createUserIntoDB(user);
+    const userParsedData =
+      UserValidations.createUserValidationSchema.parse(user);
+    const result = await UserServices.createUserIntoDB(userParsedData);
+
+    // if (Error) {
+    //   res.status(500).json({
+    //     success: false,
+    //     message: 'something wrong',
+    //     error: Error,
+    //   });
+    // }
 
     res.status(200).json({
       success: true,
@@ -13,7 +24,11 @@ const createUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: 'server error',
+      err,
+    });
   }
 };
 
