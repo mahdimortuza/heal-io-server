@@ -1,3 +1,5 @@
+import QueryBuilder from '../../builder/QueryBuilder';
+import { searchableFields } from './user.constants';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 
@@ -11,63 +13,15 @@ const createUserIntoDB = async (payload: TUser) => {
 };
 
 const getAllUsersFromDB = async (query: Record<string, unknown>) => {
-  const queryObj = { ...query };
+  const studentQuery = new QueryBuilder(User.find(), query)
+    .search(searchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-  const searchableFields = ['email', 'name'];
-
-  let searchTerm = '';
-
-  if (query?.searchTerm) {
-    searchTerm = query?.searchTerm as string;
-  }
-
-  const searchQuery = User.find({
-    $or: searchableFields.map((field) => ({
-      [field]: { $regex: searchTerm, $options: 'i' },
-    })),
-  });
-
-  // filtering
-  const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
-
-  excludeFields.forEach((el) => delete queryObj[el]);
-
-  const filterQuery = searchQuery.find(queryObj);
-
-  let sort = 'email';
-
-  if (query.sort) {
-    sort = query.sort as string;
-  }
-
-  const sortQuery = filterQuery.sort(sort);
-
-  let page = 1;
-  let limit = 5;
-  let skip = 0;
-
-  if (query.limit) {
-    limit = Number(query.limit);
-  }
-
-  if (query.page) {
-    page = Number(query.page);
-    skip = (page - 1) * limit;
-  }
-
-  const paginateQuery = sortQuery.skip(skip);
-
-  const limitQuery = paginateQuery.limit(limit);
-
-  let fields = '-__v';
-
-  if (query.fields) {
-    fields = (query.fields as string).split(',').join(' ');
-  }
-
-  const fieldQuery = await limitQuery.select(fields);
-
-  return fieldQuery;
+  const result = await studentQuery.modelQuery;
+  return result;
 };
 
 const getSingleUserFromDB = async (id: string) => {
