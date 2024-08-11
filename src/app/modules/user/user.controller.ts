@@ -2,13 +2,11 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { UserServices } from './user.service';
-import { UserValidations } from './user.validation';
 
 const createUser = catchAsync(async (req, res) => {
   const user = req.body.user;
 
-  const userParsedData = UserValidations.createUserValidationSchema.parse(user);
-  const result = await UserServices.createUserIntoDB(userParsedData);
+  const result = await UserServices.createUserIntoDB(user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
