@@ -13,7 +13,7 @@ app.use(cors({ origin: ['http://localhost:5173'], credentials: true }));
 app.use('/api/v1', router);
 
 // server
-app.get('/', (req: Request, res: Response) => {
+app.get('/', async (req: Request, res: Response) => {
   const message = {
     message: 'hello from heal.io server.',
     timestamp: new Date(),

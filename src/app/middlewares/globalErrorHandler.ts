@@ -3,6 +3,9 @@
 import express, { Application, ErrorRequestHandler } from 'express';
 import { ZodError } from 'zod';
 import config from '../config';
+import { AppError } from '../errors/AppError';
+import handleCastError from '../errors/handleCastError';
+import handleDuplicateError from '../errors/handleDuplicateError';
 import handleValidationError from '../errors/handleValidationError';
 import handleZodError from '../errors/handleZodError';
 import { TErrorSources } from '../interface/error';
@@ -11,7 +14,7 @@ const app: Application = express();
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   // default values for error
   let statusCode = 500;
-  let message = err.message || 'Something went wrong!';
+  let message = 'Something went wrong!';
 
   let errorSources: TErrorSources = [
     {
@@ -31,6 +34,33 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSources;
+  } else if (err?.name === 'CastError') {
+    const simplifiedError = handleCastError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
+  } else if (err?.code === 11000) {
+    const simplifiedError = handleDuplicateError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
+  } else if (err instanceof AppError) {
+    statusCode = err?.statusCode;
+    message = err?.message;
+    errorSources = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
+  } else if (err instanceof Error) {
+    message = err?.message;
+    errorSources = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
   }
 
   return res.status(statusCode).json({
