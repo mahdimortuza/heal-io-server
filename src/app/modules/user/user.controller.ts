@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
+import httpStatus from 'http-status';
+import sendResponse from '../../utils/sendResponse';
 import { UserServices } from './user.service';
 import { UserValidations } from './user.validation';
 
@@ -9,9 +11,11 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     const userParsedData =
       UserValidations.createUserValidationSchema.parse(user);
     const result = await UserServices.createUserIntoDB(userParsedData);
-    res.status(200).json({
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
-      message: 'User is created successfully!',
+      message: 'Student created successfully!',
       data: result,
     });
   } catch (err) {

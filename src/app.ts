@@ -2,7 +2,7 @@ import cors from 'cors';
 import express, { Application, Request, Response } from 'express';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import notFound from './app/middlewares/notFound';
-import { UserRoute } from './app/modules/user/user.route';
+import router from './app/routes';
 const app: Application = express();
 
 // parsers
@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cors({ origin: ['http://localhost:5173'], credentials: true }));
 
 // application routes
-app.use('/api/v1/users', UserRoute);
+app.use('/api/v1', router);
 
 // server
 app.get('/', (req: Request, res: Response) => {
