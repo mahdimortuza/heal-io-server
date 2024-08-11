@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { UserServices } from './user.service';
 import { UserValidations } from './user.validation';
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = req.body.user;
 
@@ -14,16 +14,12 @@ const createUser = async (req: Request, res: Response) => {
       message: 'User is created successfully!',
       data: result,
     });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Internal server error',
-      err,
-    });
+  } catch (err) {
+    next(err);
   }
 };
 
-const getAllUsers = async (req: Request, res: Response) => {
+const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await UserServices.getAllUsersFromDB();
     res.status(200).json({
@@ -32,11 +28,15 @@ const getAllUsers = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
-const getSingleUser = async (req: Request, res: Response) => {
+const getSingleUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
     const result = await UserServices.getSingleUserFromDB(id);
@@ -46,11 +46,15 @@ const getSingleUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
-const updateSingleUser = async (req: Request, res: Response) => {
+const updateSingleUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
     const result = await UserServices.updateSingleUserIntoDB(id, req.body);
@@ -60,16 +64,16 @@ const updateSingleUser = async (req: Request, res: Response) => {
       message: 'User updated successfully!',
       data: result,
     });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Internal server error',
-      err,
-    });
+  } catch (err) {
+    next(err);
   }
 };
 
-const deleteSingleUser = async (req: Request, res: Response) => {
+const deleteSingleUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
     const result = await UserServices.deleteSingleUserFromDB(id);
@@ -79,7 +83,7 @@ const deleteSingleUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
