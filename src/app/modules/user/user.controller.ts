@@ -17,6 +17,8 @@ const createUser = catchAsync(async (req, res) => {
 });
 
 const getAllUsers = catchAsync(async (req, res) => {
+  console.log(req.cookies);
+
   const result = await UserServices.getAllUsersFromDB(req.query);
 
   sendResponse(res, {
