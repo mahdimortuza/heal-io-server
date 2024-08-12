@@ -11,10 +11,10 @@ router.post(
   AuthControllers.loginUser,
 );
 
-// router.post(
-//   '/refresh-token',
-//   validateRequest(AuthValidation.refreshTokenValidation),
-//   AuthControllers.refreshToken,
-// );
+router.post(
+  '/refresh-token',
+  validateRequest(AuthValidation.refreshTokenValidation),
+  AuthControllers.refreshToken,
+);
 
 export const LoginRoutes = router;
