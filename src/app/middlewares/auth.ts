@@ -15,14 +15,16 @@ const auth = (...requiredRoles: TUserRole[]) => {
     async (req: CustomRequest, res: Response, next: NextFunction) => {
       const token = req.headers.authorization;
 
-      // checks if the token is sent from client
+      // checks if the token is missing
       if (!token) {
         throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
       }
 
+      // if token is valid
       jwt.verify(
         token,
         config.jwt_access_secret as string,
+
         function (err, decoded) {
           // err
           if (err) {
