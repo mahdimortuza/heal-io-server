@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
-import { model, Model, Schema } from 'mongoose';
+import { model, Schema } from 'mongoose';
 import config from '../../config';
-import { TUser } from './user.interface';
+import { TUser, UserModel } from './user.interface';
 
 const userSchema = new Schema<TUser, UserModel>({
   name: { type: String, required: [true, 'User name is required'], trim: true },
@@ -11,6 +11,10 @@ const userSchema = new Schema<TUser, UserModel>({
   isDeleted: {
     type: Boolean,
     default: false,
+  },
+  role: {
+    type: String,
+    enum: ['superAdmin', 'admin', 'user'],
   },
 });
 
@@ -47,8 +51,23 @@ userSchema.statics.isUserExists = async function (email: string) {
   const existingUser = await User.findOne({ email });
   return existingUser;
 };
-interface UserModel extends Model<TUser> {
-  isUserExists(email: string): Promise<TUser | null>;
-}
+
+userSchema.statics.isUserExistsByEmail = async function (email: string) {
+  return await User.findOne({ email }).select('+password');
+};
+
+userSchema.statics.isPasswordMatched = async function (
+  plainTextPassword,
+  hashedPassword,
+) {
+  return await bcrypt.compare(plainTextPassword, hashedPassword);
+};
+
+userSchema.statics.isPasswordMatched = async function (
+  plainTextPassword,
+  hashedPassword,
+) {
+  return await bcrypt.compare(plainTextPassword, hashedPassword);
+};
 
 export const User = model<TUser, UserModel>('User', userSchema);
