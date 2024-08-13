@@ -7,7 +7,7 @@ const createUserValidationSchema = z.object({
       email: z.string().email(),
       password: z.string(),
       gender: z.enum(['superAdmin', 'admin', 'user']).optional(),
-      photo: z.string().optional(),
+      // photo: z.string().optional(),
     }),
   }),
 });

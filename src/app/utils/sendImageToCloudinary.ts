@@ -1,11 +1,13 @@
 import { v2 as cloudinary } from 'cloudinary';
+import multer from 'multer';
+import config from '../config';
 
 export const sendImageToCloudinary = async () => {
   // Configuration
   cloudinary.config({
-    cloud_name: 'dkwnfybul',
-    api_key: '959152257574516',
-    api_secret: 'kVLxoXHOMWyyaqRtesbmlAj7FMQ', // Click 'View API Keys' above to copy your API secret
+    cloud_name: config.cloudinary_cloud_name,
+    api_key: config.cloudinary_api_key,
+    api_secret: config.cloudinary_api_secret,
   });
 
   // Upload an image
@@ -21,12 +23,16 @@ export const sendImageToCloudinary = async () => {
     });
 
   console.log(uploadResult);
-
-  // Optimize delivery by resizing and applying auto-format and auto-quality
-  const optimizeUrl = cloudinary.url('shoes', {
-    fetch_format: 'auto',
-    quality: 'auto',
-  });
-
-  console.log(optimizeUrl);
 };
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, process.cwd() + '/uploads/');
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + '-' + uniqueSuffix);
+  },
+});
+
+export const upload = multer({ storage: storage });

@@ -1,14 +1,22 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import auth from '../../middlewares/auth';
+import validateRequest from '../../middlewares/validateRequest';
+import { upload } from '../../utils/sendImageToCloudinary';
 import { USER_ROLE } from './user.constants';
 import { UserControllers } from './user.controller';
+import { UserValidations } from './user.validation';
 
 const router = express.Router();
 
 router.post(
   '/create-user',
   auth(USER_ROLE.admin),
-  // validateRequest(UserValidations.createUserValidationSchema),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
+  validateRequest(UserValidations.createUserValidationSchema),
   UserControllers.createUser,
 );
 router.get('/', auth(USER_ROLE.admin), UserControllers.getAllUsers);
