@@ -4,12 +4,21 @@ import { searchableFields } from './user.constants';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 
-const createUserIntoDB = async (payload: TUser) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const createUserIntoDB = async (file: any, payload: TUser) => {
   if (await User.isUserExistsByEmail(payload.email)) {
     throw new Error('User already exists');
   }
+
+  const imageName = `${payload?.name} ${payload?.email}`;
+  const path = file?.path;
+
+  const { secure_url } = await sendImageToCloudinary(imageName, path);
+
+  // console.log('photo', secure_url);
+  payload.photo = secure_url as string;
+
   const result = await User.create(payload);
-  sendImageToCloudinary();
 
   return result;
 };
@@ -23,7 +32,9 @@ const getAllUsersFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await studentQuery.modelQuery;
-  return result;
+  const meta = await studentQuery.countTotal();
+
+  return { meta, result };
 };
 
 const getSingleUserFromDB = async (id: string) => {
