@@ -1,4 +1,5 @@
 import QueryBuilder from '../../builder/QueryBuilder';
+import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 import { searchableFields } from './user.constants';
 import { TUser } from './user.interface';
 import { User } from './user.model';
@@ -8,6 +9,7 @@ const createUserIntoDB = async (payload: TUser) => {
     throw new Error('User already exists');
   }
   const result = await User.create(payload);
+  sendImageToCloudinary();
 
   return result;
 };
