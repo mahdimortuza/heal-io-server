@@ -3,11 +3,26 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { UserServices } from './user.service';
 
-const createUser = catchAsync(async (req, res) => {
-  const user = req.body.user;
-  const file = req.file;
+//  as vercel server dose not  allow to host files so, controller to create user with image
 
-  const result = await UserServices.createUserIntoDB(file, user);
+// const createUser = catchAsync(async (req, res) => {
+//   const user = req.body.user;
+//   const file = req.file;
+
+//   const result = await UserServices.createUserIntoDB(file, user);
+
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'User created successfully!',
+//     data: result,
+//   });
+// });
+
+const createUser = catchAsync(async (req, res) => {
+  const user = req.body;
+
+  const result = await UserServices.createUserIntoDB(user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
