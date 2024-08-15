@@ -1,15 +1,18 @@
 import { Model, Types } from 'mongoose';
 
+type TDetail = {
+  photo: string;
+  variant: string;
+  price: string;
+}[];
 export interface TProduct {
   name: string;
   slug: string;
-  photos: string[];
   description: string;
   metaKey: string;
-  price: number;
   discount: number;
   stockStatus: boolean;
-  variant: Types.ObjectId;
+  ProductDetail: TDetail;
   category: Types.ObjectId;
 }
 

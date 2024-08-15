@@ -1,6 +1,21 @@
 import { model, Schema } from 'mongoose';
 import { ProductModel, TProduct } from './product.interface';
 
+const detailSchema = new Schema({
+  photo: {
+    type: String,
+    required: [true, 'Photo is required'],
+  },
+  variant: {
+    type: String,
+    required: [true, 'Variant is required'],
+  },
+  price: {
+    type: String,
+    required: [true, 'Price is required'],
+  },
+});
+
 const productSchema = new Schema<TProduct, ProductModel>(
   {
     name: {
@@ -12,10 +27,7 @@ const productSchema = new Schema<TProduct, ProductModel>(
       required: [true, 'Slug is required'],
       unique: true,
     },
-    photos: {
-      type: [String],
-      required: [true, 'Photos are required'],
-    },
+
     description: {
       type: String,
       required: [true, 'Description is required'],
@@ -24,10 +36,7 @@ const productSchema = new Schema<TProduct, ProductModel>(
       type: String,
       required: [true, 'Meta keywords are required'],
     },
-    price: {
-      type: Number,
-      required: [true, 'Price is required'],
-    },
+
     discount: {
       type: Number,
       required: [true, 'Discount is required'],
@@ -36,10 +45,9 @@ const productSchema = new Schema<TProduct, ProductModel>(
       type: Boolean,
       required: [true, 'Stock status is required'],
     },
-    variant: {
-      type: Schema.Types.ObjectId,
-      required: [true, 'Variant is required'],
-      ref: 'Variant',
+    ProductDetail: {
+      type: [detailSchema],
+      required: [true, 'Detail is required'],
     },
     category: {
       type: Schema.Types.ObjectId,
