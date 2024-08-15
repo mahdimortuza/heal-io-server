@@ -14,12 +14,8 @@ router.post(
   validateRequest(VariantValidations.createVariantValidationSchema),
   VariantControllers.createVariant,
 );
-router.get(
-  '/',
-  auth(USER_ROLE.admin, USER_ROLE.superAdmin),
-  VariantControllers.getAllVariants,
-);
-router.get('/:id', auth(USER_ROLE.admin), VariantControllers.getSingleVariant);
+router.get('/', VariantControllers.getAllVariants);
+router.get('/:id', VariantControllers.getSingleVariant);
 router.patch(
   '/:id',
   auth(USER_ROLE.admin),

@@ -14,6 +14,7 @@ export interface TProduct {
   stockStatus: boolean;
   ProductDetail: TDetail;
   category: Types.ObjectId;
+  isDeleted: boolean;
 }
 
 export interface ProductModel extends Model<TProduct> {

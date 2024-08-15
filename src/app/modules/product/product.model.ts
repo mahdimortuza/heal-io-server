@@ -7,8 +7,9 @@ const detailSchema = new Schema({
     required: [true, 'Photo is required'],
   },
   variant: {
-    type: String,
+    type: Schema.Types.ObjectId,
     required: [true, 'Variant is required'],
+    ref: 'Variant',
   },
   price: {
     type: String,

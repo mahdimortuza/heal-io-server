@@ -28,16 +28,8 @@ router.post(
   validateRequest(CategoryValidations.createCategoryValidationSchema),
   CategoryControllers.createCategory,
 );
-router.get(
-  '/',
-  auth(USER_ROLE.admin, USER_ROLE.superAdmin),
-  CategoryControllers.getAllCategories,
-);
-router.get(
-  '/:id',
-  auth(USER_ROLE.admin),
-  CategoryControllers.getSingleCategory,
-);
+router.get('/', CategoryControllers.getAllCategories);
+router.get('/:id', CategoryControllers.getSingleCategory);
 router.patch(
   '/:id',
   auth(USER_ROLE.admin),

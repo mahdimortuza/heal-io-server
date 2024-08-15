@@ -13,7 +13,13 @@ const createProductIntoDB = async (payload: TProduct) => {
 };
 
 const getAllProductsFromDB = async (query: Record<string, unknown>) => {
-  const productQuery = new QueryBuilder(Product.find(), query)
+  const productQuery = new QueryBuilder(
+    Product.find().populate('category').populate({
+      path: 'ProductDetail.variant',
+      select: 'variant',
+    }),
+    query,
+  )
     .search(productSearchableFields)
     .filter()
     .sort()
@@ -27,7 +33,10 @@ const getAllProductsFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleProductFromDB = async (id: string) => {
-  const result = await Product.findById(id).populate('category');
+  const result = await Product.findById(id).populate('category').populate({
+    path: 'ProductDetail.variant',
+    select: 'variant',
+  });
   return result;
 };
 

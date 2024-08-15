@@ -28,5 +28,4 @@ variantSchema.statics.isVariantExistsByName = async function (name: string) {
   const existingVariant = await Variant.findOne({ name });
   return existingVariant;
 };
-
 export const Variant = model<TVariant, VariantModel>('Variant', variantSchema);
