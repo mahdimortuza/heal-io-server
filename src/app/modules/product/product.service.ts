@@ -27,7 +27,7 @@ const getAllProductsFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleProductFromDB = async (id: string) => {
-  const result = await Product.findById(id);
+  const result = await Product.findById(id).populate('category');
   return result;
 };
 
